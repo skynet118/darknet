@@ -1,6 +1,13 @@
+ ################## Object detection with OpenCv and YOLO algorithm ##################
+
+
+
+
+
+######################################################################################
 from tkinter import *
-from PIL import Image
-from PIL import ImageTk
+from tkinter import ttk
+from PIL import Image, ImageTk
 from tkinter import filedialog
 import cv2
 import time
@@ -107,18 +114,29 @@ class App:
         self.rightsideframe.configure(bg='#ffffff')
         self.rightsideframe.grid(row=0, column=1, padx=20, pady=20, sticky=W)
 
-
-
-        tkvar = StringVar(self.leftsideframe)
-        choises = {'Detection Real time', 'Image Processing', 'Video Processing'}
-        tkvar.set('Video Processing')
         Label(self.leftsideframe, text="Select Mode", bg="#ffffff").grid(row=0, column=0, columnspan=1, sticky=W)
+        choises = ['Detection Real time', 'Image Processing', 'Video Processing']
+        
+        def selection(eventObject):
+            global mychoise
+            mychoise = eventObject.widget.get()
+            if mychoise == "Detection Real time":
+                mychoise = "demo"
+                print(mychoise)
+            elif mychoise == "Image Processing":
+                print(mychoise)
+            elif mychoise == "Video Processing":
+                print(mychoise)
 
-        popupMenu = OptionMenu(self.leftsideframe, tkvar, *choises)
-        popupMenu.grid(row=1, column=0, columnspan=1, padx=5, pady=5, sticky=W)
-        popupMenu.configure(bg="#ffffff")
+                
 
-
+        combomenu = ttk.Combobox(self.leftsideframe, values=choises, textvariable=choises[0] ,  state='readonly')
+        combomenu.current(0)
+        combomenu.grid(row=1, column=0, columnspan=1, padx=5, pady=5, sticky=W) 
+        combomenu.bind("<<ComboboxSelected>>", selection)
+        default_value = combomenu.get()
+        print(mychoise)
+        
         # Radio button
 
         Label(self.leftsideframe ,text="Choose the threshold: \n", bg="#ffffff").grid(row=2, column=0, padx=5, pady=5, sticky=W)
@@ -130,7 +148,7 @@ class App:
             print(valueRadioButton.get())
         
         for val, threshold in enumerate(thresholds):
-            Radiobutton(self.leftsideframe, text=threshold, padx= 20, variable=valueRadioButton, command=showChoise, value=val, bg="#ffffff").grid(padx=2, pady=2,sticky=W)
+            Radiobutton(self.leftsideframe, text=threshold, padx= 20, variable=valueRadioButton, command=showChoise, value=val, background="#ffffff", highlightbackground="#ffffff").grid(padx=2, pady=2,sticky=W)
 
 
 
@@ -162,11 +180,19 @@ class App:
         browseButton3 = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile3), fg="#000000", bg="#ffffff")
         browseButton3.grid(row=2, column=7, columnspan=2, padx=5, pady=5, sticky=W)
 
-        startButton = Button(self.rightsideframe, text="Start", padx=30, pady=6, fg="#ffffff", bg="#0066ff")
+        startButton = Button(self.rightsideframe, text="Start", command=lambda: call_yolo(), padx=35, pady=6, fg="#ffffff", bg="#0066ff")
         startButton.grid(row=3, column=6, columnspan=2, padx=10, pady=10)
 
-        exitButton = Button(self.rightsideframe, text="Exit", command= self.root.destroy ,padx=30, pady=6, fg="#ffffff", bg="#cc0000")
+        exitButton = Button(self.rightsideframe, text="Exit", command= self.root.destroy ,padx=35, pady=6, fg="#ffffff", bg="#cc0000")
         exitButton.grid(row=3, column=8, columnspan=2, padx=10, pady=10)
+
+
+    # functions that execute the YOLO's algorithm 
+        def call_yolo():
+            print("stating the program")
+
+
+
  
 def main():
     
