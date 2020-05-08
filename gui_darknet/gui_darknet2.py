@@ -117,26 +117,25 @@ class App:
         Label(self.leftsideframe, text="Select Mode", bg="#ffffff").grid(row=0, column=0, columnspan=1, sticky=W)
         choises = ['Detection Real time', 'Image Processing', 'Video Processing']
         
+        mode_selected = StringVar(self.leftsideframe)
+
+
         def selection(eventObject):
-            global mychoise
-            mychoise = eventObject.widget.get()
-            if mychoise == "Detection Real time":
-                mychoise = "demo"
-                print(mychoise)
-            elif mychoise == "Image Processing":
-                print(mychoise)
-            elif mychoise == "Video Processing":
-                print(mychoise)
+            
+            if eventObject.widget.get() == "Detection Real time":
+                mode_selected.set("demo")
+            elif eventObject.widget.get() == "Image Processing":
+                mode_selected.set("test")
+            elif eventObject.widget.get() == "Video Processing":
+                mode_selected.set("test")
 
-                
-
-        combomenu = ttk.Combobox(self.leftsideframe, values=choises, textvariable=choises[0] ,  state='readonly')
+    
+        combomenu = ttk.Combobox(self.leftsideframe, values=choises, textvariable= choises[0] ,  state='readonly')
         combomenu.current(0)
         combomenu.grid(row=1, column=0, columnspan=1, padx=5, pady=5, sticky=W) 
         combomenu.bind("<<ComboboxSelected>>", selection)
-        default_value = combomenu.get()
-        print(mychoise)
         
+     
         # Radio button
 
         Label(self.leftsideframe ,text="Choose the threshold: \n", bg="#ffffff").grid(row=2, column=0, padx=5, pady=5, sticky=W)
@@ -152,9 +151,17 @@ class App:
 
 
 
-        def directory_file(entryButton):
-            file_selected = filedialog.askopenfilename(filetypes=(("python files","*.py"),("All files","*.*")))
-            entryButton.insert(END, file_selected)
+        def directory_file(entryButton, labelEntry):
+            if labelEntry['text'] == "Open File":
+                file_selected = filedialog.askopenfilename(filetypes=(("python files","*.mp4"),("All files","*.*")))
+                entryButton.insert(END, file_selected)
+            elif labelEntry['text'] == "Weights":
+                file_selected = filedialog.askopenfilename(filetypes=(("weights files","*.weights"),("All files","*.*")))
+                entryButton.insert(END, file_selected)
+            elif labelEntry['text'] == "Configuration":
+                file_selected = filedialog.askopenfilename(filetypes=(("configuration files","*.cfg"),("All files","*.*")))
+
+            print(file_selected)
 
 
     # first label, entry and button to brose
@@ -162,25 +169,29 @@ class App:
         labelEntry.grid(row=0, column=2, columnspan=2, padx=5, pady=5)
         entryFile = Entry(self.rightsideframe, font=12, width=40)
         entryFile.grid(row=0, column=4, columnspan=3, padx=5, pady=5)
-        browseButton = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile), fg="#000000", bg="#ffffff")
+        browseButton = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile, labelEntry), fg="#000000", bg="#ffffff")
         browseButton.grid(row=0, column=7,columnspan=2, padx=5, pady=5, sticky=W)
 
     # 2
-        labelEntry2 = Label(self.rightsideframe, text="Weight",bg="#ffffff")
+        labelEntry2 = Label(self.rightsideframe, text="Weights",bg="#ffffff")
         labelEntry2.grid(row=1, column=2, columnspan=2, padx=5, pady=5)
         entryFile2 = Entry(self.rightsideframe, font=12, width=40)
         entryFile2.grid(row=1, column=4, columnspan=3, padx=5, pady=5)
-        browseButton2 = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile2), fg="#000000", bg="#ffffff")
+        browseButton2 = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile2, labelEntry2), fg="#000000", bg="#ffffff")
         browseButton2.grid(row=1, column=7, columnspan=2, padx=5, pady=5, sticky=W)
     # 3
         labelEntry3 = Label(self.rightsideframe, text="Configuration", bg="#ffffff")
         labelEntry3.grid(row=2, column=2, columnspan=2, padx=5, pady=5)
         entryFile3 = Entry(self.rightsideframe, font=12, width=40)
         entryFile3.grid(row=2, column=4, columnspan=3, padx=5, pady=5)
-        browseButton3 = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile3), fg="#000000", bg="#ffffff")
+        browseButton3 = Button(self.rightsideframe, text="Browse", padx=25, pady=5, command=lambda: directory_file(entryFile3, labelEntry3), fg="#000000", bg="#ffffff")
         browseButton3.grid(row=2, column=7, columnspan=2, padx=5, pady=5, sticky=W)
 
-        startButton = Button(self.rightsideframe, text="Start", command=lambda: call_yolo(), padx=35, pady=6, fg="#ffffff", bg="#0066ff")
+
+        def run_algorithm(mode_selected):
+            print("./darknet " + mode_selected.get() + " second parameter" + " third parameter ")
+
+        startButton = Button(self.rightsideframe, text="Start", command=lambda:run_algorithm(mode_selected), padx=35, pady=6, fg="#ffffff", bg="#0066ff")
         startButton.grid(row=3, column=6, columnspan=2, padx=10, pady=10)
 
         exitButton = Button(self.rightsideframe, text="Exit", command= self.root.destroy ,padx=35, pady=6, fg="#ffffff", bg="#cc0000")
@@ -188,8 +199,7 @@ class App:
 
 
     # functions that execute the YOLO's algorithm 
-        def call_yolo():
-            print("stating the program")
+      
 
 
 
